@@ -1,44 +1,52 @@
+#include "main.h"
 #include <stdlib.h>
 
-char *string_nconcat(const char *s1, const char *s2, unsigned int n) {
-    char *concatenated;
-    unsigned int len1 = 0, len2 = 0, concatLen, i, j;
+/**
+  * string_nconcat - ...
+  * @s1: ...
+  * @s2: ...
+  * @n: ...
+  *
+  * Return: ...
+  */
+char *string_nconcat(char *s1, char *s2, unsigned int n)
+{
+	unsigned int i = 0, j = 0, k = 0, l = 0;
+	char *str;
 
-    /* Check if s1 is NULL and treat it as an empty string */
-    if (s1 == NULL)
-        s1 = "";
+	if (s1 == NULL)
+		s1 = "";
+	if (s2 == NULL)
+		s2 = "";
 
-    /* Calculate the lengths of s1 and s2 */
-    while (s1[len1] != '\0')
-        len1++;
-    while (s2[len2] != '\0')
-        len2++;
+	while (s1[i])
+		i++;
 
-    /* Set the actual number of bytes to copy from s2 */
-    if (n >= len2)
-        n = len2;
+	while (s2[k])
+		k++;
 
-    /* Calculate the length of the concatenated string */
-    concatLen = len1 + n;
+	if (n >= k)
+		l = i + k;
+	else
+		l = i + n;
 
-    /* Allocate memory for the concatenated string */
-    concatenated = (char *)malloc((concatLen + 1) * sizeof(char));
+	str = malloc(sizeof(char) * l + 1);
+	if (str == NULL)
+		return (NULL);
 
-    /* Check if memory allocation was successful */
-    if (concatenated == NULL)
-        return NULL;
+	k = 0;
+	while (j < l)
+	{
+		if (j <= i)
+			str[j] = s1[j];
 
-    /* Copy s1 into the concatenated string */
-    for (i = 0; i < len1; i++)
-        concatenated[i] = s1[i];
-
-    /* Copy the first n bytes of s2 into the concatenated string */
-    for (j = 0; j < n; j++)
-        concatenated[i++] = s2[j];
-
-    /* Add null terminator at the end */
-    concatenated[i] = '\0';
-
-    return concatenated;
+		if (j >= i)
+		{
+			str[j] = s2[k];
+			k++;
+		}
+		j++;
+	}
+	str[j] = '\0';
+	return (str);
 }
-
