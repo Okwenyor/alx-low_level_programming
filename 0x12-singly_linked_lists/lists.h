@@ -1,17 +1,20 @@
 #ifndef _UNIQUE_LINKED_LIST_H_
 #define _UNIQUE_LINKED_LIST_H_
 
-/** 
-* struct list_s - singly linked list 
-* @str: string - (malloc'ed string) 
-* @len: length of the string 
-* @next: points to the next node * 
-* Description: singly linked list node structure 
-*/ 
-typedef struct list_s 
-{ char *str; unsigned int len; struct list_s *next; 
-}
-list_t;
+/**
+ * struct list_s - singly linked list
+ * @str: string - (malloc'ed string)
+ * @len: length of the string
+ * @next: points to the next node
+ *
+ * Description: singly linked list node structure
+ */
+typedef struct list_s
+{
+	char *str;
+	unsigned int len;
+	struct list_s *next;
+} list_t;
 
 /**
  * _strlen - calculate length of the string
@@ -55,6 +58,11 @@ list_t *add_node(list_t **head, const char *str);
  */
 list_t *add_node_end(list_t **head, const char *str);
 
+/**
+ * free_list - Frees a linked list
+ * @head: Pointer to the head node
+ */
 void free_list(list_t *head);
 
-#endif /* _UNIQUE_LINKED_LIST_H_
+#endif /* _UNIQUE_LINKED_LIST_H_ */
+
