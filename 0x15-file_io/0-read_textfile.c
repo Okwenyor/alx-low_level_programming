@@ -1,7 +1,6 @@
 #include "main.h"
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdlib.h>
 
 /**
  * read_textfile - Reads a text file and prints it to the POSIX standard output
@@ -12,42 +11,32 @@
  */
 ssize_t read_textfile(const char *filename, size_t letters)
 {
+	int fd;
+	char buffer[1024];
+	ssize_t bytes_read, total_bytes = 0;
 
-ssize_t read_textfile(const char *filename, size_t letters) {
-    if (filename == NULL) {
-        return 0;
-    }
+	if (filename == NULL)
+		return (0);
 
-    int file = open(filename, O_RDONLY);
-    if (file == -1) {
-        return 0;
-    }
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		return (0);
 
-    char *buffer = malloc(sizeof(char) * (letters + 1));
-    if (buffer == NULL) {
-        close(file);
-        return 0;
-    }
+	while (letters > 0 && (bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
+	{
+		ssize_t bytes_written = write(STDOUT_FILENO, buffer, bytes_read);
 
-    ssize_t bytesRead = read(file, buffer, letters);
-    if (bytesRead == -1) 
-{
-        close(file);
-        free(buffer);
-        return (0);
-    }
+		if (bytes_written == -1 || bytes_written != bytes_read)
+		{
+			close(fd);
+			return (0);
+		}
 
-    ssize_t totalRead = write(STDOUT_FILENO, buffer, bytesRead);
-    if (totalRead == -1 || (size_t)totalRead != bytesRead) {
-        close(file);
-        free(buffer);
-        return (0);
-    }
+		letters -= bytes_written;
+		total_bytes += bytes_written;
+	}
 
-totalRead = bytesWritten;
-    close(file);
-    free(buffer);
-
-    return (totalRead);
+	close(fd);
+	return (total_bytes);
 }
 
