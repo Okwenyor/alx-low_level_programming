@@ -13,12 +13,12 @@ unsigned long int mask = 1;
 	int bits = sizeof(unsigned long int) * 8;
 	int index;
 
-	for (index = bits - 1; index >= 0; i--)
+	for (index = bits - 1; index >= 0; index--)
 	{
 		if ((n >> index) & mask)
 			_putchar('1');
 		else
 			_putchar('0');
-	}
+}
 }
 
