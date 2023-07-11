@@ -2,6 +2,7 @@
 #define MAIN_H
 
 #include <stddef.h>
+#include <sys/types.h>
 
 /* _putchar: writes a character to stdout */
 int _putchar(char c);
