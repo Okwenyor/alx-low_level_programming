@@ -2,22 +2,22 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define BUFFER_SIZE 1024
 
 /**
  * error_exit - prints the error message and exits with the code given
  * @message: Error message to print
+ * @file_name: File name to include in error message
  * @exit_code: Exit code to use
  */
-void error_exit(const char *message, int exit_code)
+void error_exit(const char *message, const char *file_name, int exit_code)
 {
-int v = 0;
-
-while (message[v] != '\0')
-v++;
-
-write(STDERR_FILENO, message, v);
+write(STDERR_FILENO, message, strlen(message));
+write(STDERR_FILENO, " ", 1);
+write(STDERR_FILENO, file_name, strlen(file_name));
+write(STDERR_FILENO, "\n", 1);
 exit(exit_code);
 }
 
@@ -29,31 +29,42 @@ exit(exit_code);
 void cp_file(const char *file_from, const char *file_to)
 {
 int fd_from, fd_to, rdlen, wrlen;
-char buffer[1024];
+char buffer[BUFFER_SIZE];
 
 fd_from = open(file_from, O_RDONLY);
 if (fd_from == -1)
-error_exit("Error: Can't read from file NAME_OF_THE_FILE", 98);
+error_exit("Error: Can't read from file", file_from, 98);
 
 fd_to = open(file_to, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 if (fd_to == -1)
-error_exit("Error: Can't write to NAME_OF_THE_FILE ", 99);
+{
+close(fd_from);
+error_exit("Error: Can't write to", file_to, 99);
+}
 
 while ((rdlen = read(fd_from, buffer, BUFFER_SIZE)) > 0)
 {
 wrlen = write(fd_to, buffer, rdlen);
 if (wrlen == -1)
-error_exit("Error: Can't write to  NAME_OF_THE_FILE", 99);
+{
+close(fd_from);
+close(fd_to);
+error_exit("Error: Can't write to", file_to, 99);
+}
 }
 
 if (rdlen == -1)
-error_exit("Error: Can't read from file", 98);
+{
+close(fd_from);
+close(fd_to);
+error_exit("Error: Can't read from file", file_from, 98);
+}
 
 if (close(fd_from) == -1)
-error_exit("Error: Can't close fd", 100);
+error_exit("Error: Can't close fd", "FD_FROM", 100);
 
 if (close(fd_to) == -1)
-error_exit("Error: Can't close fd FD_VALUE ", 100);
+error_exit("Error: Can't close fd", "FD_TO", 100);
 }
 
 /**
@@ -65,18 +76,11 @@ error_exit("Error: Can't close fd FD_VALUE ", 100);
  */
 int main(int argc, char *argv[])
 {
-int i;
-
 if (argc != 3)
 {
-char *usage_msg = "Usage: ";
-char *file_from = argv[0];
-char *file_to = " file_from file_to\n";
-
-write(STDERR_FILENO, usage_msg, 7);
-for (i = 0; file_from[i] != '\0'; i++)
-write(STDERR_FILENO, &file_from[i], 1);
-write(STDERR_FILENO, file_to, 18);
+write(STDERR_FILENO, "Usage: ", 7);
+write(STDERR_FILENO, argv[0], strlen(argv[0]));
+write(STDERR_FILENO, " file_from file_to\n", 19);
 return (97);
 }
 
