@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define BUFFER_SIZE 1024
 
@@ -14,10 +15,7 @@
  */
 void error_exit(const char *message, const char *file_name, int exit_code)
 {
-write(STDERR_FILENO, message, strlen(message));
-write(STDERR_FILENO, " ", 1);
-write(STDERR_FILENO, file_name, strlen(file_name));
-write(STDERR_FILENO, "\n", 1);
+dprintf(STDERR_FILENO, "%s %s\n", message, file_name);
 exit(exit_code);
 }
 
@@ -78,9 +76,7 @@ int main(int argc, char *argv[])
 {
 if (argc != 3)
 {
-write(STDERR_FILENO, "Usage: ", 7);
-write(STDERR_FILENO, argv[0], strlen(argv[0]));
-write(STDERR_FILENO, " file_from file_to\n", 19);
+dprintf(STDERR_FILENO, "Usage: %s file_from file_to\n", argv[0]);
 return (97);
 }
 
