@@ -15,10 +15,9 @@
  */
 void error_exit(const char *message, const char *file_name, int exit_code)
 {
-int ret = dprintf(STDERR_FILENO, "%s %s\n", message, file_name);
-if (ret < 0)
+if (dprintf(STDERR_FILENO, "%s %s\n", message, file_name) < 0)
 {
-dprintf(STDERR_FILENO, "%s %s\n", message, file_name);
+dprintf(STDERR_FILENO, "Error: Failed to print error message\n");
 }
 exit(exit_code);
 }
@@ -30,7 +29,8 @@ exit(exit_code);
  */
 void cp_file(const char *file_from, const char *file_to)
 {
-int fd_from, fd_to, rdlen, wrlen;
+int fd_from, fd_to;
+ssize_t rdlen, wrlen;
 char buffer[BUFFER_SIZE];
 
 fd_from = open(file_from, O_RDONLY);
