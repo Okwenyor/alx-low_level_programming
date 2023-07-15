@@ -15,7 +15,11 @@
  */
 void error_exit(const char *message, const char *file_name, int exit_code)
 {
+int ret = dprintf(STDERR_FILENO, "%s %s\n", message, file_name);
+if (ret < 0)
+{
 dprintf(STDERR_FILENO, "%s %s\n", message, file_name);
+}
 exit(exit_code);
 }
 
